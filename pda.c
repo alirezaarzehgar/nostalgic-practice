@@ -37,17 +37,44 @@ int pop(char *c) {
   return 0;
 }
 
-bool grammar_check(char *exp, size_t n) {
+bool is_openc(char c) { return c == '(' || c == '{' || c == '['; }
+bool is_closec(char c) { return c == ')' || c == '}' || c == ']'; }
+char open2close(char c) {
+  switch (c) {
+  case '(':
+    return ')';
+  case '{':
+    return '}';
+  case '[':
+    return ']';
+  }
+  return 0;
+}
+
+bool _grammar_check(char *exp, size_t n) {
   for (size_t i = 0; i < n; i++) {
-    if (exp[i] == '(') {
-      push('(');
-    }
-    if (exp[i] == ')') {
+    if (is_openc(exp[i]))
+      push(exp[i]);
+
+    if (is_closec(exp[i])) {
       char c;
-      if (pop(&c))
+      if (pop(&c) || open2close(c) != exp[i])
         return false;
     }
   }
 
   return cur == 0;
+}
+
+bool grammar_check(char *exp, size_t n)
+{
+    bool r;
+
+    r = _grammar_check(exp, n);
+    if (stack != NULL) {
+        free(stack);
+        stack = NULL;
+    }
+    cur = 0;
+    return  r;
 }

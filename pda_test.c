@@ -45,6 +45,7 @@ typedef struct {
 
 void test_grammar_check() {
   testcase_t testcases[] = {
+      // paranthesis
       {.exp = "1+2", .result = true},
       {.exp = "1+2/4", .result = true},
       {.exp = "(1+2/4)+(3^1)", .result = true},
@@ -54,12 +55,32 @@ void test_grammar_check() {
       {.exp = "((1+3)/(1*(3+1))))", .result = false},
       {.exp = "(1+3)/(1*(3+1)))", .result = false},
       {.exp = "(1+3", .result = false},
+      
+      // braces
+      {.exp = "(1+2)", .result = true},
+      {.exp = "[a+b/c]+[1+[a*b]]", .result = true},
+      {.exp = "[a+3]*[b+[c]]", .result = true},
+      {.exp = "[[a+3]*[b+[c]]]", .result = true},
+      {.exp = "[a+3]*[b+[c]", .result = false},
+      {.exp = "[a+3]*[b+[c]]]", .result = false},
+
+      // combo
+      {.exp = "[a+{2+c}]", .result = true},
+      {.exp = "[a+{2+(a+v)}]/((((1+c/{a^5}))))", .result = true},
+      {.exp = "[a+{2+c)]", .result = false},
+      {.exp = "([a+{2+(a+v)}]/((((1+c/{a^5})))))", .result = true},
+      {.exp = "([a+{2+(a+v)}]/((((1+c/{a^5}))))}", .result = false},
+
       {.exp = NULL, .result = false},
   };
 
   for (int i = 0; testcases[i].exp; i++) {
     char *exp = testcases[i].exp;
-    CU_ASSERT(grammar_check(exp, strlen(exp)) == testcases[i].result);
+    bool r = grammar_check(exp, strlen(exp)) == testcases[i].result;
+    CU_ASSERT(r);
+    if (!r) {
+      printf("exp:%s|res:%d\n", exp, testcases[i].result);
+    }
   }
 }
 

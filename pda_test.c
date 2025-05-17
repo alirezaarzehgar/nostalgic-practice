@@ -2,6 +2,7 @@
 #include <CUnit/CUError.h>
 #include <CUnit/CUnit.h>
 #include <CUnit/TestDB.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -37,6 +38,31 @@ void test_push_count() {
   CU_ASSERT(cur == 0);
 }
 
+typedef struct {
+  char *exp;
+  bool result;
+} testcase_t;
+
+void test_grammar_check() {
+  testcase_t testcases[] = {
+      {.exp = "1+2", .result = true},
+      {.exp = "1+2/4", .result = true},
+      {.exp = "(1+2/4)+(3^1)", .result = true},
+      {.exp = "(1+3)/(1*(3+1))", .result = true},
+      {.exp = "((1+3)/(1*(3+1)))", .result = true},
+      {.exp = "(((1+3)/(1*(((3+1)))", .result = false},
+      {.exp = "((1+3)/(1*(3+1))))", .result = false},
+      {.exp = "(1+3)/(1*(3+1)))", .result = false},
+      {.exp = "(1+3", .result = false},
+      {.exp = NULL, .result = false},
+  };
+
+  for (int i = 0; testcases[i].exp; i++) {
+    char *exp = testcases[i].exp;
+    CU_ASSERT(grammar_check(exp, strlen(exp)) == testcases[i].result);
+  }
+}
+
 int main() {
   CU_pSuite pSuite = NULL;
 
@@ -52,6 +78,9 @@ int main() {
     goto cleanup;
 
   if (!CU_add_test(pSuite, "count push current location", test_push_count))
+    goto cleanup;
+
+  if (!CU_add_test(pSuite, "check grammar", test_grammar_check))
     goto cleanup;
 
   CU_basic_set_mode(CU_BRM_VERBOSE);

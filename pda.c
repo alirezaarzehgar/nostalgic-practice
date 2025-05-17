@@ -1,5 +1,6 @@
 #include "pda.h"
-#include <stdlib.h>
+#include <stdbool.h>
+#include <stdio.h>
 
 #define STACK_MEM_STEP 5
 #define STACK_MEM_DEFAULT 10
@@ -34,4 +35,19 @@ int pop(char *c) {
 
   *c = stack[--cur];
   return 0;
+}
+
+bool grammar_check(char *exp, size_t n) {
+  for (size_t i = 0; i < n; i++) {
+    if (exp[i] == '(') {
+      push('(');
+    }
+    if (exp[i] == ')') {
+      char c;
+      if (pop(&c))
+        return false;
+    }
+  }
+
+  return cur == 0;
 }

@@ -55,7 +55,7 @@ void test_grammar_check() {
       {.exp = "((1+3)/(1*(3+1))))", .result = false},
       {.exp = "(1+3)/(1*(3+1)))", .result = false},
       {.exp = "(1+3", .result = false},
-      
+
       // braces
       {.exp = "(1+2)", .result = true},
       {.exp = "[a+b/c]+[1+[a*b]]", .result = true},

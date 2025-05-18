@@ -1,6 +1,8 @@
 #include "pda.h"
+
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
   char *line;
@@ -11,6 +13,9 @@ int main() {
       printf("❌ \033[31m%zu: %s\033[0m", i, line);
     else
       printf("✅ \033[36m%zu: %s\033[0m", i, line);
+
+    free(line);
+    line = NULL;
   }
   return 0;
 }

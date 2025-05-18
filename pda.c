@@ -1,4 +1,5 @@
 #include "pda.h"
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -66,15 +67,14 @@ bool _grammar_check(char *exp, size_t n) {
   return cur == 0;
 }
 
-bool grammar_check(char *exp, size_t n)
-{
-    bool r;
+bool grammar_check(char *exp, size_t n) {
+  bool r;
 
-    r = _grammar_check(exp, n);
-    if (stack != NULL) {
-        free(stack);
-        stack = NULL;
-    }
-    cur = 0;
-    return  r;
+  r = _grammar_check(exp, n);
+  if (stack != NULL) {
+    free(stack);
+    stack = NULL;
+  }
+  cur = 0;
+  return r;
 }
